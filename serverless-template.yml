@@ -46,3 +46,16 @@ functions:
           authorizer:
             arn: $USER_POOL_ARN
 
+  get:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is /notes/{id}
+    # - method: GET request
+    handler: index.get
+    events:
+      - http:
+          path: products/{id}
+          method: get
+          cors: true
+          authorizer:
+            arn: $USER_POOL_ARN
+

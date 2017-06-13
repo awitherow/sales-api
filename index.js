@@ -1,16 +1,14 @@
 import uuid from "uuid";
-import AWS from "aws-sdk";
 
-AWS.config.update({
-  region: "us-west-2"
-});
+import { failure, success } from "./lib/response";
+import { call } from "./lib/dynamo";
 
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const PRODUCTS_TABLE = "PRODUCTS_TABLE";
 
-export function create(event, context, callback) {
+export async function create(event, context, callback) {
   const data = JSON.parse(event.body);
   const params = {
-    TableName: "PRODUCTS_TABLE",
+    TableName: PRODUCTS_TABLE,
     Item: {
       userID: event.requestContext.authorizer.claims.sub,
       productID: uuid.v1(),
@@ -18,28 +16,33 @@ export function create(event, context, callback) {
     }
   };
 
-  dynamoDB.put(params, (err, data) => {
-    const headers = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": true
-    };
+  try {
+    const result = await call("put", params);
+    callback(null, success(params.Item));
+  } catch (e) {
+    console.warn("[ERROR @ create product]", e);
+    callback(null, failure({ status: false }));
+  }
+}
 
-    const response = {
-      headers
-    };
-
-    if (err) {
-      return callback(null, {
-        ...response,
-        statusCode: 500,
-        body: JSON.stringify({ status: false })
-      });
+export async function get(event, context, callback) {
+  const params = {
+    TableName: PRODUCTS_TABLE,
+    Key: {
+      userID: event.requestContext.authorizer.claims.sub,
+      productID: event.pathParameters.id
     }
+  };
 
-    return callback(null, {
-      ...response,
-      statusCode: 200,
-      body: JSON.stringify(params.Item)
-    });
-  });
+  try {
+    const result = await call("get", params);
+    if (result.Item) {
+      callback(null, success(result.Item));
+    } else {
+      callback(null, failure({ status: false, error: "Item not found." }));
+    }
+  } catch (e) {
+    console.warn("[ERROR @ get product]", e);
+    callback(null, failure({ status: false }));
+  }
 }
