@@ -1,3 +1,5 @@
+//@flow
+
 import uuid from "uuid";
 
 import { failure, success } from "./lib/response";
@@ -65,10 +67,10 @@ export async function list(event, context, callback) {
   }
 }
 
-export async function main(event, context, callback) {
+export async function update(event, context, callback) {
   const data = JSON.parse(event.body);
   const params = {
-    TableName: "product",
+    TableName: PRODUCTS_TABLE,
     Key: {
       userID: event.requestContext.authorizer.claims.sub,
       productID: event.pathParameters.id
@@ -84,7 +86,27 @@ export async function main(event, context, callback) {
   };
 
   try {
-    const result = await dynamoDbLib.call("update", params);
+    const result = await call("update", params);
+    callback(null, success({ status: true }));
+  } catch (e) {
+    callback(null, failure({ status: false }));
+  }
+}
+
+export async function remove(event, context, callback) {
+  const params = {
+    TableName: PRODUCTS_TABLE,
+    // 'Key' defines the partition key and sort key of the item to be removed
+    // - 'userID': User Pool sub of the authenticated user
+    // - 'productID': path parameter
+    Key: {
+      userID: event.requestContext.authorizer.claims.sub,
+      productID: event.pathParameters.id
+    }
+  };
+
+  try {
+    const result = await call("delete", params);
     callback(null, success({ status: true }));
   } catch (e) {
     callback(null, failure({ status: false }));

@@ -84,3 +84,16 @@ functions:
           cors: true
           authorizer:
             arn: $USER_POOL_ARN
+
+  delete:
+    # Defines an HTTP API endpoint that calls the main function in delete.js
+    # - path: url path is /products/{id}
+    # - method: DELETE request
+    handler: index.remove
+    events:
+      - http:
+          path: products/{id}
+          method: delete
+          cors: true
+          authorizer:
+            arn: YOUR_USER_POOL_ARN
