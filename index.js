@@ -64,3 +64,29 @@ export async function list(event, context, callback) {
     callback(null, failure({ status: false }));
   }
 }
+
+export async function main(event, context, callback) {
+  const data = JSON.parse(event.body);
+  const params = {
+    TableName: "product",
+    Key: {
+      userID: event.requestContext.authorizer.claims.sub,
+      productID: event.pathParameters.id
+    },
+    // TODO: properly define what is in a product.
+    // TODO: update mock as well
+    // UpdateExpression: "SET content = :content, attachment = :attachment",
+    // ExpressionAttributeValues: {
+    //   ":attachment": data.attachment ? data.attachment : null,
+    //   ":content": data.content ? data.content : null
+    // },
+    ReturnValues: "ALL_NEW"
+  };
+
+  try {
+    const result = await dynamoDbLib.call("update", params);
+    callback(null, success({ status: true }));
+  } catch (e) {
+    callback(null, failure({ status: false }));
+  }
+}

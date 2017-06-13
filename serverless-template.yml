@@ -71,3 +71,16 @@ functions:
           cors: true
           authorizer:
             arn: $USER_POOL_ARN
+
+  update:
+    # Defines an HTTP API endpoint that calls the main function in update.js
+    # - path: url path is /products/{id}
+    # - method: PUT request
+    handler: index.update
+    events:
+      - http:
+          path: products/{id}
+          method: put
+          cors: true
+          authorizer:
+            arn: $USER_POOL_ARN
