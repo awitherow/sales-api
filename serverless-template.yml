@@ -1,0 +1,46 @@
+service: sales-api
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpackIncludeModules: true
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: prod
+  region: $AWS_REGION
+
+# 'iamRoleStatement' defines the permission policy for the Lambda function.
+# In this case Lambda functions are granted with permissions to access DynamoDB.
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource: "arn:aws:dynamodb:$AWS_REGION:*:*"
+
+functions:
+  # Defines an HTTP API endpoint that calls the main function in create.js
+  # - path: url path is /products
+  # - method: POST request
+  # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
+  #     domain api call
+  # - authorizer: authenticate the api via Cognito User Pool. Update the 'arn'
+  #     with your own User Pool ARN
+  create:
+    handler: create.main
+    events:
+      - http:
+          path: products
+          method: post
+          cors: true
+          authorizer:
+            arn: $USER_POOL_ARN
+
