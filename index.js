@@ -7,7 +7,7 @@ AWS.config.update({
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
-export function main(event, context, callback) {
+export function create(event, context, callback) {
   const data = JSON.parse(event.body);
   const params = {
     TableName: "PRODUCTS_TABLE",

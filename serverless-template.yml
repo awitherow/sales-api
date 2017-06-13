@@ -1,8 +1,10 @@
 service: sales-api
 
+# Use serverless-webpack plugin to transpile ES6/ES7
 plugins:
   - serverless-webpack
 
+# Enable auto-packing of external modules
 custom:
   webpackIncludeModules: true
 
@@ -35,7 +37,7 @@ functions:
   # - authorizer: authenticate the api via Cognito User Pool. Update the 'arn'
   #     with your own User Pool ARN
   create:
-    handler: create.main
+    handler: index.create
     events:
       - http:
           path: products

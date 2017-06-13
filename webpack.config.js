@@ -1,5 +1,6 @@
 var path = require("path");
 var nodeExternals = require("webpack-node-externals");
+var glob = require("glob");
 
 // Required for Create React App Babel transform
 process.env.NODE_ENV = "production";

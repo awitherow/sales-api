@@ -7,17 +7,20 @@ set -e
 
 source .env
 
-echo "Preparing serverless.yml"
+echo "Preparing"
 echo "..."
 
-USER_POOL_ARN=$USER_POOL_ARN
-AWS_REGION=$AWS_REGION
+rm -rf serverless.yml
+cp serverless-template.yml serverless-template.yml.tmp
 
 # https://stackoverflow.com/a/525612/1475153
-sed 's~$USER_POOL_ARN~'"$USER_POOL_ARN"'~g' serverless-template.yml
-sed 's~$AWS_REGION~'"$AWS_REGION"'~g' serverless-template.yml
+sed -i '' 's~$USER_POOL_ARN~'"$USER_POOL_ARN"'~g' serverless-template.yml
+sed -i '' 's~$AWS_REGION~'"$AWS_REGION"'~g' serverless-template.yml
+
+cat serverless-template.yml
 
 mv serverless-template.yml serverless.yml
+mv serverless-template.yml.tmp serverless-template.yml
 
-echo "All environment variables successfully transferred"
+echo "serverless.yml prepared"
 exit

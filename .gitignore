@@ -1,3 +1,5 @@
 .env
 .serverless
 node_modules
+serverless.yml
+.webpack
