@@ -48,7 +48,7 @@ functions:
 
   get:
     # Defines an HTTP API endpoint that calls the main function in get.js
-    # - path: url path is /notes/{id}
+    # - path: url path is /products/{id}
     # - method: GET request
     handler: index.get
     events:
@@ -59,3 +59,15 @@ functions:
           authorizer:
             arn: $USER_POOL_ARN
 
+  list:
+    # Defines an HTTP API endpoint that calls the main function in list.js
+    # - path: url path is /products
+    # - method: GET request
+    handler: index.list
+    events:
+      - http:
+          path: products
+          method: get
+          cors: true
+          authorizer:
+            arn: $USER_POOL_ARN

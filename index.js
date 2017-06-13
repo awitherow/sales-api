@@ -46,3 +46,21 @@ export async function get(event, context, callback) {
     callback(null, failure({ status: false }));
   }
 }
+
+export async function list(event, context, callback) {
+  const params = {
+    TableName: PRODUCTS_TABLE,
+    KeyConditionExpression: "userID = :userID",
+    ExpressionAttributeValues: {
+      ":userID": event.requestContext.authorizer.claims.sub
+    }
+  };
+
+  try {
+    const result = await call("query", params);
+    callback(null, success(result.Items));
+  } catch (e) {
+    console.warn("[ERROR @ list products]", e);
+    callback(null, failure({ status: false }));
+  }
+}
