@@ -3,12 +3,12 @@
 set -e
 
 # please run this script from the root of the project,
-# else many of the commands will fail
+# like ./scripts/setup.sh
 
 source .env
 
 echo "Preparing serverless.yml"
-echo
+echo "..."
 
 USER_POOL_ARN=$USER_POOL_ARN
 AWS_REGION=$AWS_REGION
