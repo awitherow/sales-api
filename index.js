@@ -80,20 +80,29 @@ export async function list(event: Event, context: {}, callback: Function) {
 }
 
 export async function update(event: Event, context: {}, callback: Function) {
-    const data = JSON.parse(event.body);
+    const { title, description, photo, category, weight } = JSON.parse(
+        event.body,
+    );
     const params = {
         TableName: PRODUCTS_TABLE,
         Key: {
             userID: event.requestContext.authorizer.claims.sub,
             productID: event.pathParameters.id,
         },
-        // TODO: properly define what is in a product.
-        // TODO: update mock as well
-        // UpdateExpression: "SET content = :content, attachment = :attachment",
-        // ExpressionAttributeValues: {
-        //   ":attachment": data.attachment ? data.attachment : null,
-        //   ":content": data.content ? data.content : null
-        // },
+        UpdateExpression: `
+            SET photo = :photo,
+            title = :title,
+            description = :description,
+            category = :category,
+            weight = :weight
+        `,
+        ExpressionAttributeValues: {
+            ':photo': Boolean(photo) && photo,
+            ':title': Boolean(title) && title,
+            ':description': Boolean(description) && description,
+            ':category': Boolean(category) && category,
+            ':weight': Boolean(weight) && weight,
+        },
         ReturnValues: 'ALL_NEW',
     };
 
@@ -101,6 +110,7 @@ export async function update(event: Event, context: {}, callback: Function) {
         const result = await call('update', params);
         callback(null, success({ status: true }));
     } catch (e) {
+        console.warn('[ERROR @ update products]', e);
         callback(null, failure({ status: false }));
     }
 }
@@ -121,6 +131,7 @@ export async function remove(event: Event, context: {}, callback: Function) {
         const result = await call('delete', params);
         callback(null, success({ status: true }));
     } catch (e) {
+        console.warn('[ERROR @ remove products]', e);
         callback(null, failure({ status: false }));
     }
 }
