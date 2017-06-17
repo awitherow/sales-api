@@ -10,14 +10,16 @@ const PRODUCTS_TABLE = 'PRODUCTS_TABLE';
 
 export async function create(event: Event, context: {}, callback: Function) {
     const data = JSON.parse(event.body);
+    const valid = await validProduct((data: Product));
 
-    if (typeof await validProduct((data: Product)) !== 'Error') {
+    if (typeof valid !== Error) {
         const params = {
             TableName: PRODUCTS_TABLE,
             Item: {
                 userID: event.requestContext.authorizer.claims.sub,
                 productID: uuid.v1(),
                 createdAt: new Date().getTime(),
+                ...data,
             },
         };
 

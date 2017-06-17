@@ -3,7 +3,7 @@ import type { Product } from '../types';
 function validProduct(product: Product): Promise<Error | boolean> {
     return new Promise((fulfill, reject) => {
         Object.keys(product).map(i => {
-            const i = product[i];
+            const item = product[i];
             // TODO: figure out elegant way to verify.
             // if (
             //     (i === 'title' ||
@@ -17,10 +17,8 @@ function validProduct(product: Product): Promise<Error | boolean> {
             //     ))
             // }
         });
-        resolve(true);
+        fulfill(true);
     });
 }
 
-export default {
-    validProduct,
-};
+export { validProduct };
