@@ -96,4 +96,4 @@ functions:
           method: delete
           cors: true
           authorizer:
-            arn: YOUR_USER_POOL_ARN
+            arn: $USER_POOL_ARN
