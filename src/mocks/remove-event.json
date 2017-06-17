@@ -1,12 +1,12 @@
 {
-  "pathParameters": {
-    "id": "2c053fc0-5040-11e7-bf0f-af3bd081fdf9"
-  },
-  "requestContext": {
-    "authorizer": {
-      "claims": {
-        "sub": "USER-SUB-1234"
-      }
+    "pathParameters": {
+        "id": "2240d3b0-5337-11e7-b351-e92da7dbc5de"
+    },
+    "requestContext": {
+        "authorizer": {
+            "claims": {
+                "sub": "USER-SUB-1234"
+            }
+        }
     }
-  }
 }
