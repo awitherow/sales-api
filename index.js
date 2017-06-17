@@ -1,19 +1,17 @@
 //@flow
-
 import uuid from 'uuid';
 
 import { failure, success } from './src/helpers/response';
 import { call } from './src/aws/dynamo';
 import { validProduct } from './src/validation/product';
+import type { Event, Product } from './src/types';
 
 const PRODUCTS_TABLE = 'PRODUCTS_TABLE';
-
-import type { Event, Product } from './src/types';
 
 export async function create(event: Event, context: {}, callback: Function) {
     const data = JSON.parse(event.body);
 
-    if (validProduct((data: Product))) {
+    if (typeof await validProduct((data: Product)) !== 'Error') {
         const params = {
             TableName: PRODUCTS_TABLE,
             Item: {

@@ -16,6 +16,8 @@ type Product = {
     title: string,
     description: string,
     tags: Array<string>,
+    category: string,
+    weight: number,
     photo: string,
 };
 
