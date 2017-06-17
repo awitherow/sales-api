@@ -2,41 +2,36 @@
 
 import uuid from 'uuid';
 
-import { failure, success } from './lib/response';
-import { call } from './lib/dynamo';
+import { failure, success } from './src/helpers/response';
+import { call } from './src/aws/dynamo';
+import { validProduct } from './src/validation/product';
 
 const PRODUCTS_TABLE = 'PRODUCTS_TABLE';
 
-type Event = {
-  body: string,
-  pathParameters: {
-    id?: string,
-  },
-  requestContext: {
-    authorizer: {
-      claims: {
-        sub: string,
-      },
-    },
-  },
-};
+import type { Event, Product } from './src/types';
 
 export async function create(event: Event, context: {}, callback: Function) {
   const data = JSON.parse(event.body);
-  const params = {
-    TableName: PRODUCTS_TABLE,
-    Item: {
-      userID: event.requestContext.authorizer.claims.sub,
-      productID: uuid.v1(),
-      createdAt: new Date().getTime(),
-    },
-  };
 
-  try {
-    const result = await call('put', params);
-    callback(null, success(params.Item));
-  } catch (e) {
-    console.warn('[ERROR @ create product]', e);
+  if (validProduct((data: Product))) {
+    const params = {
+      TableName: PRODUCTS_TABLE,
+      Item: {
+        userID: event.requestContext.authorizer.claims.sub,
+        productID: uuid.v1(),
+        createdAt: new Date().getTime(),
+      },
+    };
+
+    try {
+      const result = await call('put', params);
+      callback(null, success(params.Item));
+    } catch (e) {
+      console.warn('[ERROR @ create product]', e);
+      callback(null, failure({ status: false }));
+    }
+  } else {
+    console.warn('[ERROR @ create product]', 'invalid product input');
     callback(null, failure({ status: false }));
   }
 }
