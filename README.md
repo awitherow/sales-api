@@ -17,8 +17,6 @@ source this when completed.
 source .env
 ```
 
-Then run  `.scripts/setup.sh`
-
 ## scripts
 
 ### setup.sh
@@ -37,7 +35,6 @@ this will mock any of the functions you wish to fire off. simply call
 It will then use the events file to run your mock json against the serverless endpoint.
 
 
-
 ## deployment
 
-Before any form of deployment, make sure you have your environment variables properly set up and then run the script found at `scripts/setup_serverless_yml.sh`.
+Before any form of deployment, make sure you have your environment variables properly set up and then run the script found at `scripts/setup.sh`.
